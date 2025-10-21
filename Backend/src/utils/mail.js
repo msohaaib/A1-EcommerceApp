@@ -1,4 +1,41 @@
 import mailgen from "mailgen";
+import nodemailer from "nodemailer";
+
+const sendEmail = async (option) => {
+  const mailGenerator = new mailgen({
+    theme: "default",
+    product: {
+      name: "EcommerceApp",
+      link: "http://www.ecommerceapp.com",
+    },
+  });
+
+  const emailTextual = mailGenerator.generatePlaintext(option.mailGenContent);
+  const emailHtml = mailGenerator.generate(option.mailGenContent);
+
+  const transporter = nodemailer.createTransport({
+    host: process.env.MAILTRAP_SMTP_HOST,
+    port: process.env.MAILTRAP_SMTP_PORT,
+    auth: {
+      user: process.env.MAILTRAP_SMTP_USER,
+      pass: process.env.MAILTRAP_SMTP_PASS,
+    },
+  });
+
+  const mail = {
+    from: "msohaib55@outlook.com",
+    to: option.email,
+    subject: option.subject,
+    text: emailTextual,
+    html: emailHtml,
+  };
+
+  try {
+    await transporter.sendMail(mail);
+  } catch (error) {
+    console.error("Email Service Failed", error);
+  }
+};
 
 const emailVerificationMailgenContent = (username, verificationUrl) => {
   return {
@@ -35,4 +72,10 @@ const forgotPasswordMailgenContent = (username, passwordResetUrl) => {
         "Need help, or have Question just reply to this email, we'd love to help.",
     },
   };
+};
+
+export {
+  emailVerificationMailgenContent,
+  forgotPasswordMailgenContent,
+  sendEmail,
 };
