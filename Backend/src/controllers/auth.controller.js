@@ -7,8 +7,8 @@ import { emailVerificationMailgenContent, sendEmail } from "../utils/mail.js";
 const generateAccessRefreshToken = async (userId) => {
   try {
     const user = await User.findById(userId);
-    const accessToken = User.generateAccessToken();
-    const refreshToken = User.generateRefreshToken();
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
     user.refreshToken = refreshToken;
     await user.save({ validateBeforeSave: false });
     return { accessToken, refreshToken };
@@ -24,7 +24,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const { username, password, email, fullName } = req.body;
 
   const existingUser = await User.findOne({
-    $or: [{ username }, email],
+    $or: [{ username }, { email }],
   });
   if (existingUser) {
     throw new ApiError(
@@ -38,6 +38,7 @@ const registerUser = asyncHandler(async (req, res) => {
     username,
     email,
     fullName,
+    password,
     isEmailVerified: false,
   });
 
@@ -77,4 +78,43 @@ const registerUser = asyncHandler(async (req, res) => {
     );
 });
 
-export { registerUser };
+const login = asyncHandler(async (req, res) => {
+  const { email, username, password } = req.body;
+
+  if (!email && !username) {
+    throw new ApiError(400, "Email or username is required");
+  }
+
+  const user = await User.findOne({
+    $or: [{ email }, { username }],
+  });
+
+  if (!user) {
+    throw new ApiError(400, "User not found with provided email or username");
+  }
+
+  const isPasswordCorrect = await user.isPasswordCorrect(password);
+  if (!isPasswordCorrect) {
+    throw new ApiError(400, "Invalid credentials");
+  }
+
+  const { accessToken, refreshToken } = await generateAccessRefreshToken(
+    user._id,
+  );
+
+  const loggedInUser = await User.findById(user._id).select(
+    "-password -refreshToken -emailVerificationToken -emailVerificationExpiry",
+  );
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { user: loggedInUser, accessToken, refreshToken },
+        "User logged in successfully!",
+      ),
+    );
+});
+
+export { registerUser, login };
