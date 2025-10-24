@@ -1,11 +1,11 @@
 import { View } from "react-native";
 import React from "react";
-import StartScreen from "./Screens/StartScreen";
+import Home from "./Screens/Home";
 
 export default function App() {
   return (
     <View>
-      <StartScreen />
+      <Home />
     </View>
   );
 }
