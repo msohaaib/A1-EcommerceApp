@@ -1,11 +1,6 @@
-import { View } from "react-native";
 import React from "react";
-import Home from "./Screens/Home";
+import AppNavigator from "./navigation/Navigator";
 
 export default function App() {
-  return (
-    <View>
-      <Home />
-    </View>
-  );
+  return <AppNavigator />;
 }

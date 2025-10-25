@@ -8,6 +8,7 @@ import {
   forgotPasswordMailgenContent,
   sendEmail,
 } from "../utils/mail.js";
+import crypto from "crypto";
 
 const generateAccessRefreshToken = async (userId) => {
   try {
@@ -60,7 +61,7 @@ const registerUser = asyncHandler(async (req, res) => {
     subject: "Please verify your email",
     mailGenContent: emailVerificationMailgenContent(
       user.username,
-      `${req.protocol}://${req.get("host")}/api/v1/users/verify-email/${unHashedToken}`,
+      `${req.protocol}://${req.get("host")}/api/v1/auth/verify-email/${unHashedToken}`,
     ),
   });
 
@@ -155,7 +156,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
   }
 
   let hashedToken = crypto
-    .createHashed("sha256")
+    .createHash("sha256")
     .update(verificationToken)
     .digest("hex");
 
@@ -311,7 +312,7 @@ const resetForgotPassword = asyncHandler(async (req, res) => {
   });
 
   if (!user) {
-    throw new ApiError(489, "Token is invalid or expired");
+    throw new ApiError(401, "Token is invalid or expired");
   }
 
   user.forgotPasswordExpiry = undefined;

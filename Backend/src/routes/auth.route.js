@@ -8,6 +8,7 @@ import {
   refreshAccessToken,
   registerUser,
   resendEmailVerification,
+  resetForgotPassword,
   verifyEmail,
 } from "../controllers/auth.controller.js";
 import { validate } from "../middlewares/validator.middleware.js";
@@ -45,6 +46,6 @@ router
     changeCurrentPassword,
   );
 router
-  .route("/resed-email-verification")
+  .route("/resend-email-verification")
   .post(verifyJWT, resendEmailVerification);
 export default router;
