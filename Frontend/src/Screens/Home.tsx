@@ -70,8 +70,12 @@ export default function Home() {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <Text style={styles.title}>Welcome to ShopEase 👋</Text>
-        <TextInput style={styles.searchBar} placeholder="Search products..." />
+        <View>
+          <TextInput
+            style={styles.searchBar}
+            placeholder="Search products..."
+          />
+        </View>
 
         {/* Promo Banner */}
         <View style={styles.bannerContainer}>
