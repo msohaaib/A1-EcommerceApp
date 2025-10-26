@@ -1,0 +1,50 @@
+[
+  {
+    "id": "1",
+    "name": "Wireless Headphones",
+    "price": 99.99,
+    "category": "electronics",
+    "image": "https://picsum.photos/200/300?random=1",
+    "description": "High-quality wireless headphones with noise cancellation."
+  },
+  {
+    "id": "2",
+    "name": "Graphic T-Shirt",
+    "price": 29.99,
+    "category": "clothing",
+    "image": "https://picsum.photos/200/300?random=2",
+    "description": "Comfortable cotton t-shirt with unique design."
+  },
+  {
+    "id": "3",
+    "name": "Programming Book",
+    "price": 49.99,
+    "category": "books",
+    "image": "https://picsum.photos/200/300?random=3",
+    "description": "Learn JavaScript in-depth with this comprehensive guide."
+  },
+  {
+    "id": "4",
+    "name": "Wireless Headphones",
+    "price": 99.99,
+    "category": "electronics",
+    "image": "https://picsum.photos/200/300?random=1",
+    "description": "High-quality wireless headphones with noise cancellation."
+  },
+  {
+    "id": "5",
+    "name": "Graphic T-Shirt",
+    "price": 29.99,
+    "category": "clothing",
+    "image": "https://picsum.photos/200/300?random=2",
+    "description": "Comfortable cotton t-shirt with unique design."
+  },
+  {
+    "id": "6",
+    "name": "Programming Book",
+    "price": 49.99,
+    "category": "books",
+    "image": "https://picsum.photos/200/300?random=3",
+    "description": "Learn JavaScript in-depth with this comprehensive guide."
+  }
+]
