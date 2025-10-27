@@ -23,11 +23,13 @@ export default function LoginScreen({ navigation }) {
     }
 
     try {
-      const payload = {
-        email: emailOrUsername.includes("@") ? emailOrUsername : undefined,
-        username: !emailOrUsername.includes("@") ? emailOrUsername : undefined,
-        password,
-      };
+      let payload = { password };
+
+      if (emailOrUsername.includes("@")) {
+        payload.email = emailOrUsername;
+      } else {
+        payload.username = emailOrUsername;
+      }
 
       console.log("Login Payload:", payload);
 
@@ -36,10 +38,10 @@ export default function LoginScreen({ navigation }) {
       Alert.alert("Success", response.data.message || "Login successful", [
         {
           text: "OK",
-          onPress: () => navigation.replace("HomeScreen"),
+          onPress: () => navigation.replace("Main"),
         },
       ]);
-      navigation.replace("HomeScreen");
+
       console.log("AccessToken:", response.data.data.accessToken);
       console.log("RefreshToken:", response.data.data.refreshToken);
     } catch (error) {
@@ -53,19 +55,21 @@ export default function LoginScreen({ navigation }) {
       }
 
       Alert.alert("Error", message);
-      n;
     }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
+
       <TextInput
         placeholder="Email or Username"
         value={emailOrUsername}
         onChangeText={setEmailOrUsername}
         style={styles.input}
+        autoCapitalize="none"
       />
+
       <TextInput
         placeholder="Password"
         value={password}
@@ -73,11 +77,20 @@ export default function LoginScreen({ navigation }) {
         style={styles.input}
         secureTextEntry
       />
+
       <TouchableOpacity onPress={handleLogin} style={styles.button}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
+        <Text style={styles.link}>Forgot Password?</Text>
+      </TouchableOpacity>
+
       <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
-        <Text style={{ marginTop: 20 }}>Don't have an account? Signup</Text>
+        <Text style={styles.signupText}>
+          Don't have an account?{" "}
+          <Text style={{ color: "#1f2937" }}>Sign Up</Text>
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -89,16 +102,23 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
+    backgroundColor: "#fff",
   },
-  title: { fontSize: 30, marginBottom: 20 },
+  title: {
+    fontSize: 32,
+    fontWeight: "bold",
+    marginBottom: 30,
+    color: "#1f2937",
+  },
   input: {
     width: "100%",
     height: 50,
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 8,
-    marginBottom: 10,
-    paddingHorizontal: 10,
+    marginBottom: 15,
+    paddingHorizontal: 12,
+    fontSize: 16,
   },
   button: {
     width: "100%",
@@ -107,6 +127,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 8,
+    marginTop: 10,
   },
-  buttonText: { color: "#fff", fontSize: 18 },
+  buttonText: { color: "#fff", fontSize: 18, fontWeight: "600" },
+  link: {
+    color: "#007bff",
+    marginTop: 15,
+    fontSize: 16,
+  },
+  signupText: {
+    marginTop: 25,
+    fontSize: 16,
+    color: "#555",
+  },
 });

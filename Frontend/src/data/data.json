@@ -1,50 +1,50 @@
 [
   {
     "id": "1",
-    "name": "Wireless Headphones",
-    "price": 99.99,
-    "category": "electronics",
-    "image": "https://picsum.photos/200/300?random=1",
-    "description": "High-quality wireless headphones with noise cancellation."
+    "name": "Classic Leather Watch",
+    "price": 129.99,
+    "category": "watches",
+    "image": "https://picsum.photos/200/300?random=11",
+    "description": "Elegant analog watch with genuine leather strap and stainless steel case."
   },
   {
     "id": "2",
-    "name": "Graphic T-Shirt",
-    "price": 29.99,
-    "category": "clothing",
-    "image": "https://picsum.photos/200/300?random=2",
-    "description": "Comfortable cotton t-shirt with unique design."
+    "name": "Smart Fitness Watch",
+    "price": 199.99,
+    "category": "watches",
+    "image": "https://picsum.photos/200/300?random=12",
+    "description": "Track your health and stay connected with this smart fitness smartwatch."
   },
   {
     "id": "3",
-    "name": "Programming Book",
-    "price": 49.99,
-    "category": "books",
-    "image": "https://picsum.photos/200/300?random=3",
-    "description": "Learn JavaScript in-depth with this comprehensive guide."
+    "name": "Chronograph Sport Watch",
+    "price": 179.99,
+    "category": "watches",
+    "image": "https://picsum.photos/200/300?random=13",
+    "description": "Durable chronograph watch with water resistance and tachymeter functionality."
   },
   {
     "id": "4",
-    "name": "Wireless Headphones",
+    "name": "Minimalist Analog Watch",
     "price": 99.99,
-    "category": "electronics",
-    "image": "https://picsum.photos/200/300?random=1",
-    "description": "High-quality wireless headphones with noise cancellation."
+    "category": "watches",
+    "image": "https://picsum.photos/200/300?random=14",
+    "description": "Modern and sleek analog watch with a minimalist dial design."
   },
   {
     "id": "5",
-    "name": "Graphic T-Shirt",
-    "price": 29.99,
-    "category": "clothing",
-    "image": "https://picsum.photos/200/300?random=2",
-    "description": "Comfortable cotton t-shirt with unique design."
+    "name": "Luxury Gold Watch",
+    "price": 349.99,
+    "category": "watches",
+    "image": "https://picsum.photos/200/300?random=15",
+    "description": "Premium gold-plated wristwatch for timeless luxury and sophistication."
   },
   {
     "id": "6",
-    "name": "Programming Book",
-    "price": 49.99,
-    "category": "books",
-    "image": "https://picsum.photos/200/300?random=3",
-    "description": "Learn JavaScript in-depth with this comprehensive guide."
+    "name": "Digital Sports Watch",
+    "price": 89.99,
+    "category": "watches",
+    "image": "https://picsum.photos/200/300?random=16",
+    "description": "Rugged digital watch with stopwatch, alarm, and backlight features."
   }
 ]

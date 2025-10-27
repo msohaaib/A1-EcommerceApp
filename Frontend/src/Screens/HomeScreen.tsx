@@ -1,3 +1,8 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react-native/sort-styles */
+/* eslint-disable react-native/no-color-literals */
+import React, { useEffect, useState } from "react";
 import {
   View,
   FlatList,
@@ -5,8 +10,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   TextInput,
+  ScrollView,
 } from "react-native";
-import { useEffect, useState } from "react";
 import ProductCard from "../components/productCard";
 import products from "../data/data.json";
 
@@ -14,7 +19,16 @@ export default function HomeScreen({ navigation }) {
   const [featured, setFeatured] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const categories = ["Electronics", "Clothing", "Books"];
+  const [activeCategory, setActiveCategory] = useState("All");
+
+  const categories = [
+    "All",
+    "Electronics",
+    "Clothing",
+    "Books",
+    "Beauty",
+    "Sports",
+  ];
 
   useEffect(() => {
     setFeatured(products);
@@ -22,7 +36,7 @@ export default function HomeScreen({ navigation }) {
   }, []);
 
   useEffect(() => {
-    if (searchQuery) {
+    if (searchQuery.trim()) {
       const lowerQuery = searchQuery.toLowerCase();
       setFilteredProducts(
         products.filter(
@@ -36,81 +50,145 @@ export default function HomeScreen({ navigation }) {
     }
   }, [searchQuery, featured]);
 
+  const handleCategoryPress = (category) => {
+    setActiveCategory(category);
+    if (category === "All") {
+      setFilteredProducts(products);
+    } else {
+      setFilteredProducts(products.filter((p) => p.category === category));
+    }
+  };
+
   return (
     <View style={styles.container}>
+      <Text style={styles.header}>Welcome 👋</Text>
+      <Text style={styles.subHeader}>Find your next favorite product</Text>
+
       <TextInput
         placeholder="Search products..."
         value={searchQuery}
         onChangeText={setSearchQuery}
         style={styles.searchInput}
+        placeholderTextColor="#999"
       />
-      <Text style={styles.title}>Featured Products</Text>
+
+      {/* Category Chips */}
+      <View style={styles.categoryWrapper}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.categoryScroll}
+        >
+          {categories.map((category) => (
+            <TouchableOpacity
+              key={category}
+              style={[
+                styles.categoryChip,
+                activeCategory === category && styles.activeCategoryChip,
+              ]}
+              onPress={() => handleCategoryPress(category)}
+            >
+              <Text
+                style={[
+                  styles.categoryText,
+                  activeCategory === category && styles.activeCategoryText,
+                ]}
+              >
+                {category}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+
+      <Text style={styles.sectionTitle}>Products</Text>
       <FlatList
-        data={searchQuery ? filteredProducts : featured}
+        data={filteredProducts}
         renderItem={({ item }) => (
           <ProductCard
             product={item}
             onPress={() =>
-              navigation.navigate("ProductDetail", { id: item.id })
+              navigation.navigate("ProductDetail", { product: item })
             }
           />
         )}
         keyExtractor={(item) => item.id}
-        horizontal={!searchQuery}
-        showsHorizontalScrollIndicator={false}
-        numColumns={searchQuery ? 2 : 0}
-        columnWrapperStyle={
-          searchQuery ? { justifyContent: "space-between" } : null
-        }
+        numColumns={2}
+        columnWrapperStyle={{ justifyContent: "space-between" }}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 100 }}
       />
-      {!searchQuery && (
-        <>
-          <Text style={styles.subtitle}>Categories</Text>
-          {categories.map((category) => (
-            <TouchableOpacity
-              key={category}
-              onPress={() =>
-                navigation.navigate("ProductList", {
-                  category: category.toLowerCase(),
-                })
-              }
-              style={styles.categoryButton}
-            >
-              <Text style={styles.categoryText}>{category}</Text>
-            </TouchableOpacity>
-          ))}
-        </>
-      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: "#f5f5f5" },
-  searchInput: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    padding: 12,
-    marginBottom: 16,
-    borderRadius: 8,
-    backgroundColor: "#fff",
-  },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 16 },
-  subtitle: {
-    fontSize: 20,
+  container: { flex: 1, padding: 16, backgroundColor: "#f8fafc" },
+
+  header: {
+    fontSize: 26,
     fontWeight: "bold",
-    marginTop: 24,
-    marginBottom: 8,
+    color: "#1f2937",
   },
-  categoryButton: {
+  subHeader: {
+    fontSize: 15,
+    color: "#6b7280",
+    marginBottom: 16,
+  },
+
+  searchInput: {
     backgroundColor: "#fff",
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 8,
+    borderRadius: 12,
+    padding: 12,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
     shadowColor: "#000",
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 1,
+    marginBottom: 16,
+  },
+
+  categoryWrapper: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 6,
+    marginBottom: 16,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
   },
-  categoryText: { fontSize: 16, textAlign: "center" },
+  categoryScroll: {
+    alignItems: "center",
+    paddingHorizontal: 4,
+  },
+  categoryChip: {
+    backgroundColor: "#f3f4f6",
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    marginRight: 10,
+  },
+  activeCategoryChip: {
+    backgroundColor: "#2563eb",
+  },
+  categoryText: {
+    fontSize: 14,
+    color: "#374151",
+  },
+  activeCategoryText: {
+    color: "#fff",
+    fontWeight: "600",
+  },
+
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#1f2937",
+    marginBottom: 8,
+  },
 });
