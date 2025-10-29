@@ -126,8 +126,3 @@ Notes:
   - `npx react-native run-android` — build+run on Android
 
 ---
-
-If you'd like, I can:
-
-- add an example `.env.example` file to `Backend/` with the placeholders filled in, or
-- add a short `README-Backend.md` and `README-Frontend.md` with more detailed API docs and screen setup.
