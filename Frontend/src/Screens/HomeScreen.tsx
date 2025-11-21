@@ -1,7 +1,3 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react-native/no-inline-styles */
-/* eslint-disable react-native/sort-styles */
-/* eslint-disable react-native/no-color-literals */
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -11,30 +7,49 @@ import {
   StyleSheet,
   TextInput,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import ProductCard from "../components/productCard";
-import products from "../data/data.json";
+import API from "../API/api"; // Axios instance with baseURL
 
 export default function HomeScreen({ navigation }) {
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [featured, setFeatured] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [activeCategory, setActiveCategory] = useState("All");
-
-  const categories = [
-    "All",
-    "Electronics",
-    "Clothing",
-    "Books",
-    "Beauty",
-    "Sports",
-  ];
+  const [activeBrand, setActiveBrand] = useState("All");
+  const [brands, setBrands] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setFeatured(products);
-    setFilteredProducts(products);
+    fetchProducts();
   }, []);
 
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const response = await API.get("/products");
+      if (response.data.success) {
+        const productsData = response.data.data;
+        setProducts(productsData);
+        setFeatured(productsData);
+        setFilteredProducts(productsData);
+
+        // Extract unique brands from products
+        const uniqueBrands = [
+          "All",
+          ...new Set(productsData.map((p) => p.brand)),
+        ];
+        setBrands(uniqueBrands);
+      }
+    } catch (error) {
+      console.log("Error fetching products:", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Search functionality
   useEffect(() => {
     if (searchQuery.trim()) {
       const lowerQuery = searchQuery.toLowerCase();
@@ -42,22 +57,33 @@ export default function HomeScreen({ navigation }) {
         products.filter(
           (p) =>
             p.name.toLowerCase().includes(lowerQuery) ||
-            p.category.toLowerCase().includes(lowerQuery),
+            p.brand.toLowerCase().includes(lowerQuery),
         ),
       );
     } else {
-      setFilteredProducts(featured);
+      // If no search, apply active brand filter
+      handleBrandPress(activeBrand, true);
     }
-  }, [searchQuery, featured]);
+  }, [searchQuery]);
 
-  const handleCategoryPress = (category) => {
-    setActiveCategory(category);
-    if (category === "All") {
+  // Brand filter
+  const handleBrandPress = (brand, skipStateUpdate = false) => {
+    if (!skipStateUpdate) setActiveBrand(brand);
+
+    if (brand === "All") {
       setFilteredProducts(products);
     } else {
-      setFilteredProducts(products.filter((p) => p.category === category));
+      setFilteredProducts(products.filter((p) => p.brand === brand));
     }
   };
+
+  if (loading) {
+    return (
+      <View style={styles.loader}>
+        <ActivityIndicator size="large" color="#2563eb" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -72,29 +98,29 @@ export default function HomeScreen({ navigation }) {
         placeholderTextColor="#999"
       />
 
-      {/* Category Chips */}
+      {/* Brand Chips */}
       <View style={styles.categoryWrapper}>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.categoryScroll}
         >
-          {categories.map((category) => (
+          {brands.map((brand) => (
             <TouchableOpacity
-              key={category}
+              key={brand}
               style={[
                 styles.categoryChip,
-                activeCategory === category && styles.activeCategoryChip,
+                activeBrand === brand && styles.activeCategoryChip,
               ]}
-              onPress={() => handleCategoryPress(category)}
+              onPress={() => handleBrandPress(brand)}
             >
               <Text
                 style={[
                   styles.categoryText,
-                  activeCategory === category && styles.activeCategoryText,
+                  activeBrand === brand && styles.activeCategoryText,
                 ]}
               >
-                {category}
+                {brand}
               </Text>
             </TouchableOpacity>
           ))}
@@ -112,7 +138,7 @@ export default function HomeScreen({ navigation }) {
             }
           />
         )}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => (item._id ? item._id : index.toString())}
         numColumns={2}
         columnWrapperStyle={{ justifyContent: "space-between" }}
         showsVerticalScrollIndicator={false}
@@ -123,19 +149,14 @@ export default function HomeScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: "#f8fafc" },
-
-  header: {
-    fontSize: 26,
-    fontWeight: "bold",
-    color: "#1f2937",
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: "#f8fafc",
   },
-  subHeader: {
-    fontSize: 15,
-    color: "#6b7280",
-    marginBottom: 16,
-  },
-
+  loader: { flex: 1, justifyContent: "center", alignItems: "center" },
+  header: { fontSize: 26, fontWeight: "bold", color: "#1f2937" },
+  subHeader: { fontSize: 15, color: "#6b7280", marginBottom: 16 },
   searchInput: {
     backgroundColor: "#fff",
     borderRadius: 12,
@@ -150,7 +171,6 @@ const styles = StyleSheet.create({
     elevation: 1,
     marginBottom: 16,
   },
-
   categoryWrapper: {
     backgroundColor: "#fff",
     borderRadius: 12,
@@ -162,10 +182,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  categoryScroll: {
-    alignItems: "center",
-    paddingHorizontal: 4,
-  },
+  categoryScroll: { alignItems: "center", paddingHorizontal: 4 },
   categoryChip: {
     backgroundColor: "#f3f4f6",
     paddingVertical: 8,
@@ -173,18 +190,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginRight: 10,
   },
-  activeCategoryChip: {
-    backgroundColor: "#2563eb",
-  },
-  categoryText: {
-    fontSize: 14,
-    color: "#374151",
-  },
-  activeCategoryText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-
+  activeCategoryChip: { backgroundColor: "#2563eb" },
+  categoryText: { fontSize: 14, color: "#374151" },
+  activeCategoryText: { color: "#fff", fontWeight: "600" },
   sectionTitle: {
     fontSize: 18,
     fontWeight: "600",

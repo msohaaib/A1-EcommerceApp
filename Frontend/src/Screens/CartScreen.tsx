@@ -81,7 +81,9 @@ export default function CartScreen({ navigation }) {
         <>
           <FlatList
             data={cart}
-            keyExtractor={(i) => i.id.toString()}
+            keyExtractor={(item, index) =>
+              item._id ? item._id.toString() : index.toString()
+            }
             renderItem={renderItem}
           />
 

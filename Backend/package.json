@@ -16,7 +16,7 @@
   "author": "Muhammad Sohaib",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^3.1.10",
+    "nodemon": "^3.1.11",
     "prettier": "3.6.2"
   },
   "dependencies": {

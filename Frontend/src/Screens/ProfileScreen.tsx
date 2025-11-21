@@ -4,9 +4,16 @@ import React from "react";
 export default function ProfileScreen() {
   return (
     <View>
-      <Text>ProfileScreen</Text>
+      <Text style={styles.text}>User Profile</Text>
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  text: {
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop: 20,
+  },
+});
